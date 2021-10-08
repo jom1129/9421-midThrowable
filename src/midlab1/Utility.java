@@ -17,6 +17,11 @@ public class Utility {
         }
     }
 
+    /*
+        NOTICE: The provided reference.pdf is only for the tables of the ISP and ICP values.
+                For everything else, consult the official Module!!!!
+     */
+
     /*  @Cj @Clarence
         parseInput():
             Gets input from the keyboard
