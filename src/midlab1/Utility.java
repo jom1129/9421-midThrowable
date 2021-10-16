@@ -37,7 +37,7 @@ public class Utility {
      */
 
     /*  @Jerome @Cj (less workload for CJ, since assigned to parseInput())
-        fromPostfixToInfixTable():
+        postfixEvaluateTable():
             Take the stack of tokens from parseInput()
             Then output a table of values shown on PAGES 12-13
      */
