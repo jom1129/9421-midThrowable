@@ -30,7 +30,7 @@ public class Utility {
             return: a Stack of Tokens (Stack<Token>)
      */
 
-    /*  @Enrico @Clarence @Cj (less workload for Clarence, since assigned to parseInput())
+    /*  @Enrico @Clarence (less workload for Clarence, since assigned to parseInput())
         fromInfixtoPostfixTable():
             Take the stack of tokens from parseInput()
             Then output a table of values shown on PAGES 11-12
