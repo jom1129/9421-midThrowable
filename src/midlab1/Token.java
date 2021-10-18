@@ -10,6 +10,8 @@ public class Token {
         setPriority(token);
     }
 
+    public String toString() {return token;}
+
     void setPriority(String token) {
         switch (token) {
             case "^":
@@ -41,4 +43,5 @@ public class Token {
                 isOperand = true;
         }
     }
+
 }
