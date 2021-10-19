@@ -9,40 +9,43 @@ import java.io.BufferedReader;
     Provides utility functions for the Interface class
  */
 public class Utility {
-    static <T> void printStack(LinkedStack<Token> stack) {
-        Node<Token> current = stack.getTop();
-        if(stack.isEmpty()) {
-            System.out.print(" ");
-            return;
-        }
-        while (current != null) {
-            System.out.print(current.getInfo());
-            System.out.print(",");
-            current = current.getLink();
-        }
+    static <T> void printStack(LinkedStack<T> stack) {
 
+        if (stack.isEmpty()) return;
+
+        T element = stack.peek();
+        stack.pop();
+        printStack(stack);
+
+        System.out.print(element + " ");
+        stack.push(element);
     }
 
-    /*
-        NOTICE: The provided reference.pdf is only for the tables of the ISP and ICP values.
-                For everything else, consult the official Module!!!!
-     */
-
-    /*  @Cj @Clarence
-        parseInput():
-            Gets input from the keyboard
-            Creates corresponding Token objects (either operand or operator)
-            for every user input.
-            return: a Stack of Tokens (Stack<Token>)
-     */
-    static LinkedStack<Token> parseInput() throws IOException{
-        Token token ;
-        LinkedStack<Token> stack = new LinkedStack<>();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        String line = reader.readLine();
+    static LinkedStack<Token> parseInput(String input) {
+        Token token;
         String symbol = "";
-        for (int i = line.length() -1; i != -1 ; i--) {
-            char c = line.charAt(i);
+        LinkedStack<Token> stack = new LinkedStack<>();
+        /*
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new InputStreamReader(System.in));
+            String line = reader.readLine();
+            String symbol = "";
+            for (int i = line.length() - 1; i != -1; i--) {
+                char c = line.charAt(i);
+                symbol = Character.toString(c);
+                token = new Token(symbol);
+                stack.push(token);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return stack;
+
+         */
+
+        for (int i = input.length() - 1; i != -1; i--) {
+            char c = input.charAt(i);
             symbol = Character.toString(c);
             token = new Token(symbol);
             stack.push(token);
@@ -55,9 +58,8 @@ public class Utility {
             Take the stack of tokens from parseInput()
             Then output a table of values shown on PAGES 11-12
      */
-    static <T> void infixToPostfixTable() throws IOException{
-        System.out.print("Enter an Infix String: ");
-        LinkedStack<Token> stack = parseInput();
+    static void infixToPostfixTable(LinkedStack<Token> stack) {
+
         Node<Token> current = stack.getTop();
         LinkedStack<Token> operatorStack = new LinkedStack<>();
         LinkedStack<Token> postFixStack = new LinkedStack<>();
@@ -139,9 +141,7 @@ public class Utility {
             Take the stack of tokens from parseInput()
             Then output a table of values shown on PAGES 12-13
      */
-    static <T> void postfixEvaluateTable() throws IOException {
-        System.out.println("Enter a Postfix String");
-        LinkedStack<Token> stack = parseInput();
+    static void postfixEvaluateTable(LinkedStack<Token> stack) {
         Node<Token> current = stack.getTop();
         LinkedStack<Token> operandStack = new LinkedStack<>();
         double operand1, operand2;
@@ -196,9 +196,8 @@ public class Utility {
             current = current.getLink();
         }
     }
-    public static void main(String[] args) throws IOException {
-        infixToPostfixTable();
-        postfixEvaluateTable();
+    public static void main(String[] args)  {
+
     }
 
 }

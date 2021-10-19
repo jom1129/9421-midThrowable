@@ -1,9 +1,15 @@
 package midlab1;
 
+import jdk.jshell.execution.Util;
+
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import java.awt.*;
 import java.awt.event.*;
-import java.net.PortUnreachableException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
 /*
     GUI CLASS: @Kurt
@@ -65,9 +71,11 @@ public class Interface {
 
      */
     private static final int TEXTAREA_COLUMNS = 20;
+    LinkedStack<Token> stack;
     private JPanel labelPanel = new JPanel();
     private JPanel upperPanel = new JPanel();
-    private JPanel tablePanel = new JPanel(new GridLayout(1, 0));
+    private JScrollPane tabelPanel;
+    private JTextArea tableText = new JTextArea(20, 120);
     private JTextField input = new JTextField(TEXTAREA_COLUMNS);
     private JLabel expressionType = new JLabel("Postfix.");
     private JPanel expressionPanel = new JPanel();
@@ -80,12 +88,53 @@ public class Interface {
         labelPanel.add(new JLabel("Infix-Postfix Utility"));
         for (JComponent component : upperPanelComponents) upperPanel.add(component);
         for (JComponent component : expressionPanelComponents) expressionPanel.add(component);
-        submit.addActionListener((ActionEvent e) -> expressionType.setText(input.getText()));
+        tabelPanel = new JScrollPane(tableText);
+        tabelPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        tabelPanel.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        redirectSystemStreams();
+        submit.addActionListener((ActionEvent e) -> {
+            if (input.getText().trim().length() == 0) input.setText("");
+            stack = Utility.parseInput(input.getText());
+            Utility.infixToPostfixTable(stack);
+        });
 
-        // Utilize me
+        // Utilize methods
 
-        // Setup the table
 
+
+    }
+
+    private void updateTextPane(final String text) {
+        SwingUtilities.invokeLater(() -> {
+            Document doc = tableText.getDocument();
+            try {
+                doc.insertString(doc.getLength(), text, null);
+            } catch (BadLocationException e) {
+
+            }
+            tableText.setCaretPosition(doc.getLength() - 1);
+        });
+    }
+
+    private void redirectSystemStreams() {
+        OutputStream out = new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {
+                updateTextPane(String.valueOf((char) b));
+            }
+
+            @Override
+            public void write(byte[] b, int off, int len) throws IOException {
+                updateTextPane(new String(b, off, len));
+            }
+
+            @Override
+            public void write(byte[] b) throws IOException {
+                write(b, 0, b.length);
+            }
+        };
+        System.setOut(new PrintStream(out, true));
+        System.setErr(new PrintStream(out, true));
     }
 
     public JPanel getLabelPanel() {
@@ -100,6 +149,10 @@ public class Interface {
         return expressionPanel;
     }
 
+    public JScrollPane getTabelPanel() {
+        return tabelPanel;
+    }
+
     private static void createAndShowGUI() {
         Interface gui = new Interface();
         JFrame frame = new JFrame();
@@ -111,6 +164,7 @@ public class Interface {
         frame.getContentPane().add(gui.getLabelPanel());
         frame.getContentPane().add(gui.getUpperPanel());
         frame.getContentPane().add(gui.getExpressionPanel());
+        frame.getContentPane().add(gui.getTabelPanel());
 
         // Display the window
         frame.pack();
@@ -119,6 +173,8 @@ public class Interface {
     }
 
     public static void main(String[] args) {
+
+
         EventQueue.invokeLater(() -> {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -127,6 +183,9 @@ public class Interface {
             }
             createAndShowGUI();
         });
+
     }
+
+
 
 }
