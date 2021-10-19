@@ -77,26 +77,44 @@ public class Interface {
     private JScrollPane tabelPanel;
     private JTextArea tableText = new JTextArea(20, 120);
     private JTextField input = new JTextField(TEXTAREA_COLUMNS);
-    private JLabel expressionType = new JLabel("Postfix.");
+    private String[] conversionType = { "Infix to Postfix Expression", "Evaluate Postfix Expression" };
+    private JComboBox<String> expressionType = new JComboBox<>(conversionType);
     private JPanel expressionPanel = new JPanel();
     private JButton submit = new JButton("Submit");
-    private JComponent[] upperPanelComponents = { new JLabel("Expression: "), input };
+    private JButton clear = new JButton("Clear");
+    private JComponent[] upperPanelComponents = { new JLabel("Expression: "), input, submit };
     private JComponent[] expressionPanelComponents = { new JLabel("Expression Type: "),
-            expressionType, submit};
+            expressionType, clear };
+
 
     public Interface() {
+        redirectSystemStreams();
+
         labelPanel.add(new JLabel("Infix-Postfix Utility"));
+
         for (JComponent component : upperPanelComponents) upperPanel.add(component);
+
         for (JComponent component : expressionPanelComponents) expressionPanel.add(component);
+        expressionType.setSelectedIndex(0);
+
         tabelPanel = new JScrollPane(tableText);
         tabelPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         tabelPanel.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        redirectSystemStreams();
+        tableText.setEditable(false);
+
         submit.addActionListener((ActionEvent e) -> {
-            if (input.getText().trim().length() == 0) input.setText("");
             stack = Utility.parseInput(input.getText());
-            Utility.infixToPostfixTable(stack);
+            if (expressionType.getSelectedIndex() == 0) Utility.infixToPostfixTable(stack);
+            else Utility.postfixEvaluateTable(stack);
+            if (input.getText().equals("")) {
+                JOptionPane.showMessageDialog(null, "Input cannot be empty.");
+                tableText.setText(null);
+            }
         });
+
+        clear.addActionListener((ActionEvent e) -> tableText.setText(null));
+
+
 
         // Utilize methods
 
