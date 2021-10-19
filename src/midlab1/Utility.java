@@ -11,12 +11,10 @@ import java.io.BufferedReader;
 public class Utility {
     static <T> void printStack(LinkedStack<Token> stack) {
         Node<Token> current = stack.getTop();
-
         if(stack.isEmpty()) {
-            System.out.println("Empty stack.");
+            System.out.print(" ");
             return;
         }
-
         while (current != null) {
             System.out.print(current.getInfo());
             System.out.print(",");
@@ -57,6 +55,84 @@ public class Utility {
             Take the stack of tokens from parseInput()
             Then output a table of values shown on PAGES 11-12
      */
+    static <T> void infixToPostfixTable() throws IOException{
+        System.out.print("Enter an Infix String: ");
+        LinkedStack<Token> stack = parseInput();
+        Node<Token> current = stack.getTop();
+        LinkedStack<Token> operatorStack = new LinkedStack<>();
+        LinkedStack<Token> postFixStack = new LinkedStack<>();
+        LinkedStack<Token> d = new LinkedStack<>();
+
+        System.out.printf("%-10s%-25s%-10s%n", "Symbol", "postfixExpression", "operatorStack");
+        while(current != null) {
+            System.out.printf("%-10s", current.getInfo());
+            if (current.getInfo().toString().equals("(")){
+                printStack(postFixStack);
+                System.out.printf("%-25s", " ");
+                operatorStack.push(current.getInfo());
+                printStack(operatorStack);
+                System.out.println();
+            }
+            if (current.getInfo().toString().equals(")")){
+                while(!operatorStack.peek().toString().equals("(")) {
+                    postFixStack.push(operatorStack.pop());
+
+                    if (operatorStack.peek().toString().equals("(")){
+                        d.push(operatorStack.pop());
+                        printStack(postFixStack);
+                        System.out.printf("%-25s", " ");
+                        printStack(operatorStack);
+                        System.out.println();
+                        break;
+                    }
+                }
+            }
+
+            if (current.getInfo().isOperator) {
+
+                if (current.getInfo().icp < operatorStack.peek().isp) {
+                    while (current.getInfo().icp < operatorStack.peek().isp) {
+                        postFixStack.push(operatorStack.pop());
+                    }
+                } else if (current.getInfo().icp > operatorStack.peek().isp) {
+                    printStack(postFixStack);
+                    System.out.printf("%-25s", " ");
+                    operatorStack.push(current.getInfo());
+                    printStack(operatorStack);
+                    System.out.println();
+                }
+            }
+            if(current.getInfo().isEx) {
+                if (operatorStack.isEmpty()) {
+                    printStack(postFixStack);
+                    System.out.printf("%-25s", " ");
+                    operatorStack.push(current.getInfo());
+                    printStack(operatorStack);
+                    System.out.println();
+                }
+            }
+            if (current.getInfo().isOperand){
+
+                postFixStack.push(current.getInfo());
+                printStack(postFixStack);
+                System.out.printf("%-25s", " ");
+                printStack(operatorStack);
+                System.out.println();
+
+            }
+
+            current = current.getLink();
+        }
+        if(!operatorStack.isEmpty()){
+            postFixStack.push(operatorStack.pop());
+            System.out.printf("%-10s", " ");
+            printStack(postFixStack);
+            System.out.printf("%-25s", " ");
+
+            printStack(operatorStack);
+            System.out.println();
+        }
+    }
 
     /*  @Jerome @Cj (less workload for CJ, since assigned to parseInput())
         fromPostfixToInfixTable():
@@ -78,7 +154,7 @@ public class Utility {
                 printStack(operandStack);
                 System.out.println();
             }
-            if(!current.getInfo().isOperand){
+            if(current.getInfo().isOperator | current.getInfo().isEx){
                 System.out.printf("%-10s", current.getInfo() );
                 operand2 = Double.parseDouble(operandStack.pop().toString());
                 operand1 = Double.parseDouble(operandStack.pop().toString());
@@ -121,8 +197,8 @@ public class Utility {
         }
     }
     public static void main(String[] args) throws IOException {
+        infixToPostfixTable();
         postfixEvaluateTable();
     }
 
 }
-
