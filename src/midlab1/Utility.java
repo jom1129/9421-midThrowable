@@ -67,6 +67,9 @@ public class Utility {
 
         System.out.printf("%-10s%-25s%-10s%n", "Symbol", "postfixExpression", "operatorStack");
         while(current != null) {
+            if (current.getInfo().toString().equals(" ")) {
+                current = current.getLink();
+            }
             System.out.printf("%-10s", current.getInfo());
             if (current.getInfo().toString().equals("(")){
                 printStack(postFixStack);
