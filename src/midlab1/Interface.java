@@ -67,6 +67,7 @@ public class Interface {
     private static final int TEXTAREA_COLUMNS = 20;
     private JPanel labelPanel = new JPanel();
     private JPanel upperPanel = new JPanel();
+    private JPanel tablePanel = new JPanel(new GridLayout(1, 0));
     private JTextField input = new JTextField(TEXTAREA_COLUMNS);
     private JLabel expressionType = new JLabel("Postfix.");
     private JPanel expressionPanel = new JPanel();
@@ -80,6 +81,11 @@ public class Interface {
         for (JComponent component : upperPanelComponents) upperPanel.add(component);
         for (JComponent component : expressionPanelComponents) expressionPanel.add(component);
         submit.addActionListener((ActionEvent e) -> expressionType.setText(input.getText()));
+
+        // Utilize me
+
+        // Setup the table
+
     }
 
     public JPanel getLabelPanel() {
