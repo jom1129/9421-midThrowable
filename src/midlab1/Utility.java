@@ -150,6 +150,7 @@ public class Utility {
         double operand1, operand2;
         System.out.printf("%-10s%-10s%-10s%-10s%-10s%n", "Symbol", "operand1", "operand2", "value", "operandStack");
         while(current != null){
+            if (current.getInfo().toString().equals(" ")) current = current.getLink();
             if(current.getInfo().isOperand){
                 System.out.printf("%-10s", current.getInfo() );
                 operandStack.push(current.getInfo());
