@@ -11,67 +11,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
-/*
-    GUI CLASS: @Kurt
-        You are free to contribute here, however.
+
+/**
+ * The GUI class
  */
 public class Interface {
-    /*
-    JPanel cards;   // panel that uses the CardLayout
-    final static String infxtopfx = "Infix to Postfix";
-    final static String evalpfx = "Evaluate Postfix";
 
-    public void addComponentToPane(Container pane) {
-        // Put the JComboBox in a JPanel to get a nicer look
-        JPanel comboBoxPane = new JPanel(); // use FlowLayout
-        String[] comboBoxItems = { infxtopfx, evalpfx };
-        JComboBox<String> comboBox = new JComboBox<>(comboBoxItems);
-        comboBox.setEditable(false);
-        comboBox.addItemListener((ItemEvent event) -> {
-            CardLayout cardLayout = (CardLayout) cards.getLayout();
-            cardLayout.show(cards, (String) event.getItem());
-        });
-        comboBoxPane.add(comboBox);
-
-        // Create the cards
-        // INFIX TO POSTFIX
-        JPanel cardInfToPfx = new JPanel();
-        // POSTFIX EVALUATION
-        JPanel cardPfxEval = new JPanel();
-
-        // Create the panel that contains the cards
-        cards = new JPanel(new CardLayout());
-        cards.add(cardInfToPfx, infxtopfx);
-        cards.add(cardPfxEval, evalpfx);
-
-        pane.add(comboBoxPane, BorderLayout.PAGE_START);
-        pane.add(cards, BorderLayout.CENTER);
-    }
-
-    public static void createAndShowGUI() {
-        // Create and setup the window
-        JFrame frame = new JFrame("Infix-Postfix Utility");
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        // Create and set up the content pane
-        Interface intf = new Interface();
-        intf.addComponentToPane(frame.getContentPane());
-
-        // Display the window
-        frame.pack();
-        frame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        EventQueue.invokeLater(() -> {
-            createAndShowGUI();
-        });
-    }
-
-
-     */
     private static final int TEXTAREA_COLUMNS = 20;
-    LinkedStack<Token> stack;
+    LinkedStack<Token> stack;   // Local stack variable
+    // GUI Component Classes
     private JPanel labelPanel = new JPanel();
     private JPanel upperPanel = new JPanel();
     private JScrollPane tabelPanel;
@@ -82,46 +30,57 @@ public class Interface {
     private JPanel expressionPanel = new JPanel();
     private JButton submit = new JButton("Submit");
     private JButton clear = new JButton("Clear");
+
+    // Store multiple components into arrays, then add them at once via a for loop
     private JComponent[] upperPanelComponents = { new JLabel("Expression: "), input, submit };
     private JComponent[] expressionPanelComponents = { new JLabel("Expression Type: "),
             expressionType, clear };
 
-
+    /**
+     * Initializes, attaches ActionListeners to JComponents
+     * and attaches JComponents to JPanels
+     */
     public Interface() {
-        redirectSystemStreams();
+        redirectSystemStreams();    // redirect printStream to JTextArea
 
         labelPanel.add(new JLabel("Infix-Postfix Utility"));
 
+        // Add multiple JComponents at once
         for (JComponent component : upperPanelComponents) upperPanel.add(component);
-
         for (JComponent component : expressionPanelComponents) expressionPanel.add(component);
         expressionType.setSelectedIndex(0);
 
+        // Code for displaying the formatted table
+        // for stack operations
         tabelPanel = new JScrollPane(tableText);
         tabelPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         tabelPanel.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         tableText.setEditable(false);
 
+        // Associate code for the submit button
         submit.addActionListener((ActionEvent e) -> {
-            stack = Utility.parseInput(input.getText());
-            if (expressionType.getSelectedIndex() == 0) Utility.infixToPostfixTable(stack);
-            else Utility.postfixEvaluateTable(stack);
-            if (input.getText().equals("")) {
-                JOptionPane.showMessageDialog(null, "Input cannot be empty.");
+            try {
+                stack = Utility.parseInput(input.getText());
+                if (expressionType.getSelectedIndex() == 0) Utility.infixToPostfixTable(stack);
+                else Utility.postfixEvaluateTable(stack);
+                if (input.getText().equals("")) {
+                    JOptionPane.showMessageDialog(null, "Input cannot be empty.");
+                    tableText.setText(null);
+                }
+            } catch (StackException stackException) {
+                JOptionPane.showMessageDialog(null,
+                        "Invalid expression or wrong expression type selected.");
                 tableText.setText(null);
             }
         });
-
+        // Clear the text pane
         clear.addActionListener((ActionEvent e) -> tableText.setText(null));
-
-
-
-        // Utilize methods
-
-
-
     }
 
+    /**
+     * Helper method for redirectSystemStreams()
+     * @param text
+     */
     private void updateTextPane(final String text) {
         SwingUtilities.invokeLater(() -> {
             Document doc = tableText.getDocument();
@@ -134,6 +93,9 @@ public class Interface {
         });
     }
 
+    /**
+     * Redirects CLI output to the JTextArea tableText
+     */
     private void redirectSystemStreams() {
         OutputStream out = new OutputStream() {
             @Override
@@ -152,9 +114,11 @@ public class Interface {
             }
         };
         System.setOut(new PrintStream(out, true));
-        System.setErr(new PrintStream(out, true));
+        // System.setErr(new PrintStream(out, true));
     }
-
+    /*
+        Accessor methods for properties
+     */
     public JPanel getLabelPanel() {
         return labelPanel;
     }
@@ -171,6 +135,18 @@ public class Interface {
         return tabelPanel;
     }
 
+    /**
+     * Uses the concept of composition instead of extending the JFrame class itself
+     * This method creates a new JFrame, sets the BoxLayout and attaches
+     * JPanels directly to the ContentFrame
+     *
+     * ALGORITHM:
+     *      1.) Create a new instance of the Interface class
+     *      2.) Create a new JFrame
+     *      3.) Set the content pane to a BoxLayout
+     *      4.) For every JPanel, add them to the content pane
+     *      5.) Display the Window
+     */
     private static void createAndShowGUI() {
         Interface gui = new Interface();
         JFrame frame = new JFrame();
@@ -191,8 +167,8 @@ public class Interface {
     }
 
     public static void main(String[] args) {
-
-
+        // Run the program in the Event Dispatch Thread (EDT)
+        // For Thread Safety
         EventQueue.invokeLater(() -> {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

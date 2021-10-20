@@ -21,24 +21,6 @@ public class Utility {
         Token token;
         String symbol = "";
         LinkedStack<Token> stack = new LinkedStack<>();
-        /*
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new InputStreamReader(System.in));
-            String line = reader.readLine();
-            String symbol = "";
-            for (int i = line.length() - 1; i != -1; i--) {
-                char c = line.charAt(i);
-                symbol = Character.toString(c);
-                token = new Token(symbol);
-                stack.push(token);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return stack;
-
-         */
 
         for (int i = input.length() - 1; i != -1; i--) {
             char c = input.charAt(i);
@@ -50,11 +32,6 @@ public class Utility {
         return stack;
     }
 
-    /*  @Enrico @Clarence @Cj (less workload for Clarence, since assigned to parseInput())
-        fromInfixtoPostfixTable():
-            Take the stack of tokens from parseInput()
-            Then output a table of values shown on PAGES 11-12
-     */
     static void infixToPostfixTable(LinkedStack<Token> stack) {
 
         Node<Token> current = stack.getTop();
@@ -133,11 +110,6 @@ public class Utility {
         }
     }
 
-    /*  @Jerome @Cj (less workload for CJ, since assigned to parseInput())
-        fromPostfixToInfixTable():
-            Take the stack of tokens from parseInput()
-            Then output a table of values shown on PAGES 12-13
-     */
     static void postfixEvaluateTable(LinkedStack<Token> stack) {
         Node<Token> current = stack.getTop();
         LinkedStack<Token> operandStack = new LinkedStack<>();
@@ -215,6 +187,5 @@ public class Utility {
             current = current.getLink();
         }
     }
-    public static void main(String[] args)  {
-    }
+
 }

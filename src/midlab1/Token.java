@@ -1,6 +1,10 @@
 package midlab1;
 
+/**
+ * Data Structure that represents a Token
+ */
 public class Token {
+    // FIELDS
     String token;
     boolean isOperand = false;
     boolean isOperator = false;
@@ -14,6 +18,12 @@ public class Token {
 
     public String toString() {return token;}
 
+    /**
+     * Sets the priority automatically
+     * according to established ICP (Incoming priority)
+     * and ISP (In-Stack Priority) variables.
+     * @param token
+     */
     void setPriority(String token) {
         switch (token) {
             case "^":
@@ -45,5 +55,6 @@ public class Token {
                 isOperand = true;
         }
     }
+
 
 }
