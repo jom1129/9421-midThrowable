@@ -17,34 +17,10 @@ public class Utility {
         stack.push(element);
     }
 
-    /*
-    parseInput():
-    reads the input of the user for infixToPostfixTable()
-    reads the input of the user for postfixEvaluateTable()
-    creates token objects and returns as stack of tokens.
-    */
     static LinkedStack<Token> parseInput(String input) {
         Token token;
         String symbol = "";
         LinkedStack<Token> stack = new LinkedStack<>();
-        /*
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new InputStreamReader(System.in));
-            String line = reader.readLine();
-            String symbol = "";
-            for (int i = line.length() - 1; i != -1; i--) {
-                char c = line.charAt(i);
-                symbol = Character.toString(c);
-                token = new Token(symbol);
-                stack.push(token);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return stack;
-
-         */
 
         for (int i = input.length() - 1; i != -1; i--) {
             char c = input.charAt(i);
@@ -56,11 +32,6 @@ public class Utility {
         return stack;
     }
 
-    /*  @Enrico @Clarence @Cj (less workload for Clarence, since assigned to parseInput())
-        fromInfixtoPostfixTable():
-            Take the stack of tokens from parseInput()
-            Then output a table of values shown on PAGES 11-12
-     */
     static void infixToPostfixTable(LinkedStack<Token> stack) {
 
         Node<Token> current = stack.getTop();
@@ -139,10 +110,55 @@ public class Utility {
         }
     }
 
-    /*  @Jerome @Cj (less workload for CJ, since assigned to parseInput())
-        fromPostfixToInfixTable():
-            Take the stack of tokens from parseInput()
-            Then output a table of values shown on PAGES 12-13
+    /**
+     * Instantiate current = stack.getTop()
+     * Instantiate operandStack
+     * Initialize Token new Token, String x and String y, Double operand1 and operand2
+     * Print Table Heading
+     * while current is not null
+     *      if info of current is a space
+     *          get link of current
+     *      if current is an operand
+     *          if current is not a space
+     *              x = current.getInfo().toString()
+     *              get link of current
+     *              y = current.getInfo().toString()
+     *              concatenate x and y and save to x
+     *              convert x to token and save to newToken
+     *              print newToken
+     *              push the newToken to the operandStack
+     *          else
+     *              print current
+     *              push current to the operandstack
+     *      print operandStack
+     *      if current is an operator
+     *          print current
+     *          pop operandStack and convert it to a string then save it to operand2
+     *          pop operandStack and convert it to a string then save it to operand1
+     *          print operand1 and operand2
+     *          if current is a "*"
+     *              multiply operand1 and operand2
+     *              save it to another token
+     *              push the token to operandStack
+     *          if current is a "/"
+     *              divide operand1 and operand2
+     *              save it to another token
+     *              push the token to operandStack
+     *          if current is a "+"
+     *              add operand1 and operand2
+     *              save it to another token
+     *              push the token to operandStack
+     *          if current is a "-"
+     *              subtract operand1 and operand2
+     *              save it to another token
+     *              push the token to operandStack
+     *          if current is a "^"
+     *              Math.pow(operand1,operand2)
+     *              save it to another token
+     *              push the token to operandStack
+     *       print operandStack
+     * get link of current
+     * @param stack inputted linked stack
      */
     static void postfixEvaluateTable(LinkedStack<Token> stack) {
         Node<Token> current = stack.getTop();
@@ -153,11 +169,6 @@ public class Utility {
         double operand1, operand2;
         System.out.printf("%-10s%-10s%-10s%-10s%-10s%n", "Symbol", "operand1", "operand2", "value", "operandStack");
         while(current != null){
-            if (current.getInfo().toString().equals(" ")) {
-                current = current.getLink();
-                x=y;
-            }
-
             if (current.getInfo().toString().equals(" ")) {
                 current = current.getLink();
             }
@@ -221,6 +232,5 @@ public class Utility {
             current = current.getLink();
         }
     }
-    public static void main(String[] args)  {
-    }
+
 }
